@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Campus Event Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: var(--primary-gradient);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            margin: 0 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+        }
+
+        .hero-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 3rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-filters {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .event-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .event-type {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .event-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            padding-right: 4rem;
+        }
+
+        .event-college {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .event-body {
+            padding: 1.5rem;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .event-detail i {
+            width: 20px;
+            color: #667eea;
+            margin-right: 0.75rem;
+        }
+
+        .event-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .event-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .capacity-info {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .capacity-bar {
+            width: 60px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            overflow: hidden;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .register-btn {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .register-btn:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            transform: none;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #f8f9fa;
+            transform: translateX(-3px);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-filters {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap"></i>
+                Campus Events
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login.html">Admin Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        
+        <div class="container">
+            <div class="hero-content text-center">
+                <h1 class="display-4 mb-3">Student Portal</h1>
+                <p class="lead mb-4">Discover and register for amazing campus events</p>
+                
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalEvents">0</div>
+                            <div class="stat-label">Available Events</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalColleges">0</div>
+                            <div class="stat-label">Participating Colleges</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalRegistrations">0</div>
+                            <div class="stat-label">Total Registrations</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-filters">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search events...">
+                                <label for="searchInput">
+                                    <i class="fas fa-search"></i> Search Events
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="typeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Seminar">Seminar</option>
+                                    <option value="Competition">Competition</option>
+                                    <option value="Cultural">Cultural</option>
+                                    <option value="Technical">Technical</option>
+                                    <option value="Sports">Sports</option>
+                                </select>
+                                <label for="typeFilter">
+                                    <i class="fas fa-filter"></i> Event Type
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="collegeFilter">
+                                    <option value="">All Colleges</option>
+                                </select>
+                                <label for="collegeFilter">
+                                    <i class="fas fa-university"></i> College
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-light w-100 h-100" onclick="clearFilters()">
+                                <i class="fas fa-undo"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div id="eventsContainer">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading events...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let allEvents = [];
+        let allColleges = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInitialData();
+            setupFilters();
+        });
+
+        async function loadInitialData() {
+            try {
+                const [eventsRes, collegesRes] = await Promise.all([
+                    fetch('/api/events'),
+                    fetch('/api/colleges')
+                ]);
+
+                if (eventsRes.ok) {
+                    allEvents = await eventsRes.json();
+                    document.getElementById('totalEvents').textContent = allEvents.length;
+                    displayEvents(allEvents);
+                }
+
+                if (collegesRes.ok) {
+                    allColleges = await collegesRes.json();
+                    document.getElementById('totalColleges').textContent = allColleges.length;
+                    populateCollegeFilter(allColleges);
+                }
+
+                // Calculate total registrations (placeholder)
+                const totalReg = allEvents.reduce((sum, event) => sum + (event.registration_count || 0), 0);
+                document.getElementById('totalRegistrations').textContent = totalReg;
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('eventsContainer').innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h4>Unable to Load Events</h4>
+                        <p>Please check if the server is running and try again.</p>
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            <i class="fas fa-refresh"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function populateCollegeFilter(colleges) {
+            const collegeFilter = document.getElementById('collegeFilter');
+            colleges.forEach(college => {
+                const option = document.createElement('option');
+                option.value = college.name;
+                option.textContent = college.name;
+                collegeFilter.appendChild(option);
+            });
+        }
+
+        function displayEvents(events) {
+            const container = document.getElementById('eventsContainer');
+            
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                        <h4>No Events Found</h4>
+                        <p>Try adjusting your search filters or check back later.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const eventsGrid = document.createElement('div');
+            eventsGrid.className = 'events-grid';
+
+            events.forEach(event => {
+                const eventCard = createEventCard(event);
+                eventsGrid.appendChild(eventCard);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(eventsGrid);
+        }
+
+        function createEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            
+            const registrationCount = event.registration_count || 0;
+            const capacity = event.capacity || 100;
+            const capacityPercentage = Math.min((registrationCount / capacity) * 100, 100);
+            const isFullyBooked = registrationCount >= capacity;
+
+            card.innerHTML = `
+                <div class="event-header">
+                    <div class="event-type">${event.type}</div>
+                    <div class="event-title">${event.name}</div>
+                    <div class="event-college">${event.college_name || 'Campus Event'}</div>
+                </div>
+                <div class="event-body">
+                    <div class="event-detail">
+                        <i class="fas fa-calendar-alt"></i>
+                        ${new Date(event.event_date).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                    </div>
+                    <div class="event-detail">
+                        <i class="fas fa-clock"></i>
+                        ${event.event_time || 'Time TBA'}
+                    </div>
+                    <div class="event-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${event.location || 'Venue TBA'}
+                    </div>
+                    <div class="event-description">
+                        ${event.description || 'Join us for this exciting event!'}
+                    </div>
+                </div>
+                <div class="event-footer">
+                    <div class="capacity-info">
+                        <span>${registrationCount}/${capacity}</span>
+                        <div class="capacity-bar">
+                            <div class="capacity-fill" style="width: ${capacityPercentage}%"></div>
+                        </div>
+                    </div>
+                    <button class="btn register-btn" 
+                            onclick="registerForEvent(${event.id}, '${event.name}')"
+                            ${isFullyBooked ? 'disabled' : ''}>
+                        <i class="fas fa-${isFullyBooked ? 'times' : 'user-plus'}"></i>
+                        ${isFullyBooked ? 'Full' : 'Register'}
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function setupFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const typeFilter = document.getElementById('typeFilter');
+            const collegeFilter = document.getElementById('collegeFilter');
+
+            [searchInput, typeFilter, collegeFilter].forEach(element => {
+                element.addEventListener('input', filterEvents);
+            });
+        }
+
+        function filterEvents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const collegeFilter = document.getElementById('collegeFilter').value;
+
+            const filteredEvents = allEvents.filter(event => {
+                const matchesSearch = !searchTerm || 
+                    event.name.toLowerCase().includes(searchTerm) ||
+                    (event.description && event.description.toLowerCase().includes(searchTerm));
+                
+                const matchesType = !typeFilter || event.type === typeFilter;
+                const matchesCollege = !collegeFilter || event.college_name === collegeFilter;
+
+                return matchesSearch && matchesType && matchesCollege;
+            });
+
+            displayEvents(filteredEvents);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('collegeFilter').value = '';
+            displayEvents(allEvents);
+        }
+
+        async function registerForEvent(eventId, eventName) {
+            // For demo purposes, show a simplified registration
+            const studentName = prompt(`Register for "${eventName}"?\n\nPlease enter your name:`);
+            
+            if (!studentName) return;
+
+            const studentEmail = prompt('Please enter your email:');
+            if (!studentEmail) return;
+
+            try {
+                const response = await fetch('/api/registrations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        event_id: eventId,
+                        student_name: studentName,
+                        student_email: studentEmail
+                    })
+                });
+
+                if (response.ok) {
+                    alert(`Successfully registered for "${eventName}"!\n\nYou should receive a confirmation email shortly.`);
+                    loadInitialData(); // Refresh the events to update registration counts
+                } else {
+                    const error = await response.json();
+                    alert(`Registration failed: ${error.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again later.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Campus Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .main-container {
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .glass-card h3, .glass-card h4, .glass-card h5 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .glass-card p, .glass-card span {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-card h5 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-card .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 25px;
+        }
+
+        .profile-section,
+        .events-section,
+        .registrations-section {
+            display: none;
+        }
+
+        .profile-section.active,
+        .events-section.active,
+        .registrations-section.active {
+            display: block;
+        }
+
+        .welcome-section {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+
+        .stats-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00f2fe;
+        }
+
+        .stats-card h3 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .alert {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+
+        .modal-header, .modal-footer {
+            border: none;
+        }
+
+        .modal-title {
+            color: white;
+        }
+
+        .rating-stars {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .rating-stars i {
+            margin: 0 0.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .rating-stars i:hover,
+        .rating-stars i.active {
+            color: #ffc107;
+            transform: scale(1.1);
+        }
+
+        .rating-stars i:hover ~ i {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-graduation-cap"></i> Campus Events</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('events')"><i class="fas fa-calendar"></i> Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('registrations')"><i class="fas fa-list"></i> My Registrations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item" id="loginNav">
+                        <a class="nav-link" href="#" onclick="showLoginModal()"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </li>
+                    <li class="nav-item" id="registerNav">
+                        <a class="nav-link" href="#" onclick="showRegisterModal()"><i class="fas fa-user-plus"></i> Register</a>
+                    </li>
+                    <li class="nav-item d-none" id="logoutNav">
+                        <a class="nav-link" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container main-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section" id="welcomeSection">
+            <h1><i class="fas fa-star"></i> Welcome to Campus Events</h1>
+            <p>Discover amazing events, connect with peers, and make the most of your college experience!</p>
+            
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3 id="totalEvents">0</h3>
+                        <p>Active Events</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="totalStudents">0</h3>
+                        <p>Registered Students</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <i class="fas fa-university"></i>
+                        <h3 id="totalColleges">0</h3>
+                        <p>Partner Colleges</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <button class="btn btn-primary btn-lg me-3" onclick="showLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> Student Login
+                </button>
+                <button class="btn btn-success btn-lg" onclick="showRegisterModal()">
+                    <i class="fas fa-user-plus"></i> Create Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section" id="profileSection">
+            <div class="glass-card">
+                <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+                <div id="profileContent">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading profile...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Section -->
+        <div class="events-section" id="eventsSection">
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3><i class="fas fa-calendar-alt"></i> Available Events</h3>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="eventTypeFilter" onchange="filterEvents()">
+                            <option value="">All Types</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Hackathon">Hackathon</option>
+                            <option value="Tech Talk">Tech Talk</option>
+                            <option value="Fest">Fest</option>
+                            <option value="Seminar">Seminar</option>
+                            <option value="Competition">Competition</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadEvents()">
+                            <i class="fas fa-refresh"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div id="eventsContent">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading events...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Registrations Section -->
+        <div class="registrations-section" id="registrationsSection">
+            <div class="glass-card">
+                <h3><i class="fas fa-list-check"></i> My Event Registrations</h3>
+                <div id="registrationsContent">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading registrations...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-sign-in-alt"></i> Student Login</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="loginEmail" required placeholder="your.email@college.edu">
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required placeholder="Enter your password">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Don't have an account? <a href="#" onclick="showRegisterModal()" style="color: #00f2fe;">Create Profile</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus"></i> Create Student Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="regFullName" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="regFullName" required placeholder="John Doe">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="regEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="regEmail" required placeholder="john@college.edu">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="regStudentId" class="form-label">Student ID</label>
+                                    <input type="text" class="form-control" id="regStudentId" required placeholder="STU001">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="regPhone" class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="regPhone" required placeholder="+1234567890">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="regCollege" class="form-label">College</label>
+                                    <select class="form-select" id="regCollege" required>
+                                        <option value="">Select College</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="regDepartment" class="form-label">Department</label>
+                                    <input type="text" class="form-control" id="regDepartment" required placeholder="Computer Science">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="regYear" class="form-label">Year</label>
+                                    <select class="form-select" id="regYear" required>
+                                        <option value="">Select Year</option>
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                        <option value="5">5th Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="regPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="regPassword" required placeholder="Create a strong password">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-user-plus"></i> Create Profile
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Already have an account? <a href="#" onclick="showLoginModal()" style="color: #00f2fe;">Login here</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Registration Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalTitle"></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="eventModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="registerEventBtn" onclick="registerForEvent()">
+                        <i class="fas fa-check"></i> Register for Event
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-star"></i> Rate This Event</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <h6 id="feedbackEventTitle">Event Name</h6>
+                        <p class="text-muted">How was your experience at this event?</p>
+                    </div>
+                    <form id="feedbackForm">
+                        <div class="mb-4 text-center">
+                            <label class="form-label">Your Rating</label>
+                            <div class="rating-stars" id="ratingStars">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                            <div class="mt-2">
+                                <span id="ratingText" class="text-muted">Click stars to rate</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedbackComments" class="form-label">Comments (Optional)</label>
+                            <textarea class="form-control" id="feedbackComments" rows="3" placeholder="Share your thoughts about the event..."></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" disabled id="submitFeedbackBtn">
+                                <i class="fas fa-paper-plane"></i> Submit Feedback
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer">
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/student-portal.js"></script>
+</body>
+</html>

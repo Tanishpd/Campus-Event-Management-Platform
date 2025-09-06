@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Test - Campus Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { margin: 20px; }
+        .admin-status { padding: 20px; background: #f8f9fa; margin: 20px 0; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Portal Test</h1>
+        
+        <div class="admin-status">
+            <h3>Authentication Status</h3>
+            <p><strong>Token:</strong> <span id="tokenStatus">Checking...</span></p>
+            <p><strong>Admin Info:</strong> <span id="adminInfo">Checking...</span></p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary" onclick="clearAndTest()">Clear Storage & Test Login</button>
+                <button class="btn btn-success" onclick="testLogin()">Test Login</button>
+                <button class="btn btn-info" onclick="checkStatus()">Check Status</button>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h3>Dashboard Stats Test</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 id="testEvents">0</h4>
+                            <small>Events</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 id="testStudents">0</h4>
+                            <small>Students</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 id="testRegistrations">0</h4>
+                            <small>Registrations</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h3>Login Form Test</h3>
+            <form id="testLoginForm">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="testUsername" placeholder="Username" value="admin_nit">
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="testPassword" placeholder="Password" value="admin123">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+        
+        <div class="mt-4">
+            <h3>Console Output</h3>
+            <pre id="consoleOutput" style="background: #000; color: #0f0; padding: 15px; height: 200px; overflow-y: auto;"></pre>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('consoleOutput');
+            output.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function checkStatus() {
+            const token = localStorage.getItem('admin_token');
+            const admin = localStorage.getItem('current_admin');
+            
+            document.getElementById('tokenStatus').textContent = token ? 'Present' : 'Not found';
+            document.getElementById('adminInfo').textContent = admin ? JSON.parse(admin).fullName : 'Not logged in';
+            
+            log('Token: ' + (token ? 'Present' : 'Missing'));
+            log('Admin: ' + (admin ? JSON.parse(admin).fullName : 'Not logged in'));
+        }
+
+        function clearAndTest() {
+            localStorage.clear();
+            log('LocalStorage cleared');
+            checkStatus();
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('testUsername').value;
+            const password = document.getElementById('testPassword').value;
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                log('Login response: ' + JSON.stringify(data));
+                
+                if (response.ok && data.token) {
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('current_admin', JSON.stringify(data.user));
+                    log('Login successful! Tokens saved.');
+                    checkStatus();
+                    await loadTestStats();
+                } else {
+                    log('Login failed: ' + data.message);
+                }
+            } catch (error) {
+                log('Login error: ' + error.message);
+            }
+        }
+
+        async function loadTestStats() {
+            const token = localStorage.getItem('admin_token');
+            if (!token) {
+                log('No token for stats loading');
+                return;
+            }
+
+            try {
+                const responses = await Promise.all([
+                    fetch('/api/events', { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch('/api/students', { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch('/api/registrations', { headers: { 'Authorization': `Bearer ${token}` } })
+                ]);
+
+                const [events, students, registrations] = await Promise.all([
+                    responses[0].json(),
+                    responses[1].json(),
+                    responses[2].json()
+                ]);
+
+                const totalEvents = Array.isArray(events) ? events.length : 0;
+                const totalStudents = Array.isArray(students) ? students.length : 0;
+                const totalRegistrations = Array.isArray(registrations) ? registrations.length : 0;
+
+                document.getElementById('testEvents').textContent = totalEvents;
+                document.getElementById('testStudents').textContent = totalStudents;
+                document.getElementById('testRegistrations').textContent = totalRegistrations;
+
+                log(`Stats loaded - Events: ${totalEvents}, Students: ${totalStudents}, Registrations: ${totalRegistrations}`);
+            } catch (error) {
+                log('Stats loading error: ' + error.message);
+            }
+        }
+
+        document.getElementById('testLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            testLogin();
+        });
+
+        // Initial status check
+        checkStatus();
+    </script>
+</body>
+</html>

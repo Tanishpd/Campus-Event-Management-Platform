@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Campus Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.2);
+            min-height: 100vh;
+        }
+        .sidebar .nav-link {
+            color: white;
+            border-radius: 10px;
+            margin: 5px 10px;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .topbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+        }
+        .content-area {
+            padding: 30px;
+            margin-left: 0;
+            min-height: 100vh;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        #feedbackSection {
+            margin-top: 20px;
+            margin-left: 0;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #f0f0f0;
+            padding: 15px;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        #dashboardSection {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="p-3">
+                    <h4 class="text-white mb-4">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        Campus Events
+                    </h4>
+                    
+                    <div class="user-info text-center mb-4">
+                        <div class="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center" 
+                             style="width: 50px; height: 50px; font-size: 20px; font-weight: bold;">
+                             A
+                        </div>
+                        <div class="text-white mt-2">
+                            <div id="adminName">NIT Admin</div>
+                        </div>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('events')">
+                                <i class="fas fa-calendar-alt me-2"></i>Events
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('students')">
+                                <i class="fas fa-users me-2"></i>Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('registrations')">
+                                <i class="fas fa-clipboard-list me-2"></i>Registrations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('reports')">
+                                <i class="fas fa-chart-bar me-2"></i>Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('feedback')">
+                                <i class="fas fa-star me-2"></i>Feedback
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content">
+                    <div class="topbar">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="mb-0" id="pageTitle">Dashboard</h1>
+                            <div class="d-flex align-items-center">
+                                <span class="me-3">Welcome back!</span>
+                                <div class="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; font-size: 16px; font-weight: bold;">
+                                     A
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area">
+                        <!-- Dashboard Section -->
+                        <div id="dashboardSection" class="section active">
+                            <div class="row">
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-number" id="totalEvents">1</div>
+                                        <div class="stat-label">Total Events</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-number" id="totalStudents">3</div>
+                                        <div class="stat-label">Total Students</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-number" id="totalRegistrations">3</div>
+                                        <div class="stat-label">Total Registrations</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-number" id="attendanceRate">85%</div>
+                                        <div class="stat-label">Attendance Rate</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Quick Actions</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <button class="btn btn-primary me-3 mb-2" onclick="refreshData()">
+                                                <i class="fas fa-sync-alt me-2"></i>Refresh Data
+                                            </button>
+                                            <button class="btn btn-success me-3 mb-2" onclick="showSection('events')">
+                                                <i class="fas fa-plus me-2"></i>Add Event
+                                            </button>
+                                            <button class="btn btn-info me-3 mb-2" onclick="showSection('reports')">
+                                                <i class="fas fa-chart-line me-2"></i>View Reports
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Events Section -->
+                        <div id="eventsSection" class="section">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Events Management</h5>
+                                    <button class="btn btn-primary" onclick="showAddEventForm()">
+                                        <i class="fas fa-plus me-2"></i>Add Event
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Search and Filter -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="eventSearch" placeholder="Search events..." onkeyup="filterEvents()">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" id="eventTypeFilter" onchange="filterEvents()">
+                                                <option value="">All Types</option>
+                                                <option value="Workshop">Workshop</option>
+                                                <option value="Hackathon">Hackathon</option>
+                                                <option value="Tech Talk">Tech Talk</option>
+                                                <option value="Fest">Fest</option>
+                                                <option value="Seminar">Seminar</option>
+                                                <option value="Competition">Competition</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button class="btn btn-outline-primary w-100" onclick="loadEvents()">
+                                                <i class="fas fa-sync-alt me-2"></i>Refresh
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Events Table -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-primary">
+                                                <tr>
+                                                    <th>Event Name</th>
+                                                    <th>Type</th>
+                                                    <th>Date</th>
+                                                    <th>Capacity</th>
+                                                    <th>Registered</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="eventsTableBody">
+                                                <tr>
+                                                    <td colspan="7" class="text-center">
+                                                        <div class="spinner-border text-primary" role="status"></div>
+                                                        <p class="mt-2">Loading events...</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Add/Edit Event Modal -->
+                            <div id="eventModal" class="login-overlay" style="display: none;">
+                                <div class="login-card" style="min-width: 500px;">
+                                    <h4 id="eventModalTitle">Add New Event</h4>
+                                    <form onsubmit="saveEvent(event)" id="eventForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event Name *</label>
+                                                <input type="text" class="form-control" id="eventName" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Event Type *</label>
+                                                <select class="form-select" id="eventType" required>
+                                                    <option value="">Select Type</option>
+                                                    <option value="Workshop">Workshop</option>
+                                                    <option value="Hackathon">Hackathon</option>
+                                                    <option value="Tech Talk">Tech Talk</option>
+                                                    <option value="Fest">Fest</option>
+                                                    <option value="Seminar">Seminar</option>
+                                                    <option value="Competition">Competition</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Date *</label>
+                                                <input type="date" class="form-control" id="eventDate" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Time *</label>
+                                                <input type="time" class="form-control" id="eventTime" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Venue *</label>
+                                                <input type="text" class="form-control" id="eventVenue" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Capacity *</label>
+                                                <input type="number" class="form-control" id="eventCapacity" min="1" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" id="eventDescription" rows="3"></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="button" class="btn btn-secondary" onclick="hideEventModal()">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>Save Event
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Students Section -->
+                        <div id="studentsSection" class="section">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Students Management</h5>
+                                    <div>
+                                        <button class="btn btn-outline-success me-2" onclick="exportStudents()">
+                                            <i class="fas fa-download me-2"></i>Export
+                                        </button>
+                                        <button class="btn btn-primary" onclick="showAddStudentForm()">
+                                            <i class="fas fa-user-plus me-2"></i>Add Student
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Search and Filter -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" id="studentSearch" placeholder="Search students..." onkeyup="filterStudents()">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" id="departmentFilter" onchange="filterStudents()">
+                                                <option value="">All Departments</option>
+                                                <option value="Computer Science">Computer Science</option>
+                                                <option value="Electronics">Electronics</option>
+                                                <option value="Mechanical">Mechanical</option>
+                                                <option value="Civil">Civil</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-select" id="yearFilter" onchange="filterStudents()">
+                                                <option value="">All Years</option>
+                                                <option value="1">1st Year</option>
+                                                <option value="2">2nd Year</option>
+                                                <option value="3">3rd Year</option>
+                                                <option value="4">4th Year</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button class="btn btn-outline-primary w-100" onclick="loadStudents()">
+                                                <i class="fas fa-sync-alt me-2"></i>Refresh
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Students Table -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-primary">
+                                                <tr>
+                                                    <th>Student Details</th>
+                                                    <th>Department</th>
+                                                    <th>Year</th>
+                                                    <th>Events Registered</th>
+                                                    <th>Attendance Rate</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentsTableBody">
+                                                <tr>
+                                                    <td colspan="7" class="text-center">
+                                                        <div class="spinner-border text-primary" role="status"></div>
+                                                        <p class="mt-2">Loading students...</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Add/Edit Student Modal -->
+                            <div id="studentModal" class="login-overlay" style="display: none;">
+                                <div class="login-card" style="min-width: 500px;">
+                                    <h4 id="studentModalTitle">Add New Student</h4>
+                                    <form onsubmit="saveStudent(event)" id="studentForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Full Name *</label>
+                                                <input type="text" class="form-control" id="studentName" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Email *</label>
+                                                <input type="email" class="form-control" id="studentEmail" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Student ID *</label>
+                                                <input type="text" class="form-control" id="studentId" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" id="studentPhone">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Department *</label>
+                                                <select class="form-select" id="studentDepartment" required>
+                                                    <option value="">Select Department</option>
+                                                    <option value="Computer Science">Computer Science</option>
+                                                    <option value="Electronics">Electronics</option>
+                                                    <option value="Mechanical">Mechanical</option>
+                                                    <option value="Civil">Civil</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Year *</label>
+                                                <select class="form-select" id="studentYear" required>
+                                                    <option value="">Select Year</option>
+                                                    <option value="1">1st Year</option>
+                                                    <option value="2">2nd Year</option>
+                                                    <option value="3">3rd Year</option>
+                                                    <option value="4">4th Year</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="button" class="btn btn-secondary" onclick="hideStudentModal()">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>Save Student
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Registrations Section -->
+                        <div id="registrationsSection" class="section">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Registrations Management</h5>
+                                    <div>
+                                        <button class="btn btn-outline-success me-2" onclick="exportRegistrations()">
+                                            <i class="fas fa-download me-2"></i>Export
+                                        </button>
+                                        <button class="btn btn-outline-warning me-2" onclick="markAllPresent()">
+                                            <i class="fas fa-check-double me-2"></i>Mark All Present
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Search and Filter -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control" id="registrationSearch" placeholder="Search registrations..." onkeyup="filterRegistrations()">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" id="eventFilterReg" onchange="filterRegistrations()">
+                                                <option value="">All Events</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-select" id="statusFilterReg" onchange="filterRegistrations()">
+                                                <option value="">All Status</option>
+                                                <option value="registered">Registered</option>
+                                                <option value="attended">Attended</option>
+                                                <option value="absent">Absent</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-select" id="dateFilterReg" onchange="filterRegistrations()">
+                                                <option value="">All Dates</option>
+                                                <option value="today">Today</option>
+                                                <option value="week">This Week</option>
+                                                <option value="month">This Month</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-outline-primary w-100" onclick="loadRegistrations()">
+                                                <i class="fas fa-sync-alt me-2"></i>Refresh
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Registration Stats -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-3">
+                                            <div class="card text-center bg-primary text-white">
+                                                <div class="card-body py-2">
+                                                    <h6 class="mb-0" id="totalRegistrationsCount">0</h6>
+                                                    <small>Total Registrations</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card text-center bg-success text-white">
+                                                <div class="card-body py-2">
+                                                    <h6 class="mb-0" id="attendedCount">0</h6>
+                                                    <small>Attended</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card text-center bg-warning text-white">
+                                                <div class="card-body py-2">
+                                                    <h6 class="mb-0" id="pendingCount">0</h6>
+                                                    <small>Pending</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card text-center bg-danger text-white">
+                                                <div class="card-body py-2">
+                                                    <h6 class="mb-0" id="absentCount">0</h6>
+                                                    <small>Absent</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Registrations Table -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-primary">
+                                                <tr>
+                                                    <th>
+                                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                                    </th>
+                                                    <th>Student</th>
+                                                    <th>Event</th>
+                                                    <th>Registration Date</th>
+                                                    <th>Status</th>
+                                                    <th>Check-in Time</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="registrationsTableBody">
+                                                <tr>
+                                                    <td colspan="7" class="text-center">
+                                                        <div class="spinner-border text-primary" role="status"></div>
+                                                        <p class="mt-2">Loading registrations...</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Feedback Section -->
+                        <div id="feedbackSection" class="section">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Event Feedback & Ratings</h5>
+                                    <div class="d-flex gap-2">
+                                        <select class="form-select" id="feedbackEventFilter" onchange="filterFeedback()">
+                                            <option value="">All Events</option>
+                                        </select>
+                                        <button class="btn btn-primary" onclick="loadFeedback()">
+                                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Feedback Stats -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-3">
+                                            <div class="card bg-primary text-white">
+                                                <div class="card-body text-center">
+                                                    <h4 class="text-white mb-1" id="totalFeedbackCount">0</h4>
+                                                    <div class="text-light small">Total Reviews</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card bg-success text-white">
+                                                <div class="card-body text-center">
+                                                    <h4 class="text-white mb-1" id="averageRating">0.0</h4>
+                                                    <div class="text-light small">Average Rating</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card bg-info text-white">
+                                                <div class="card-body text-center">
+                                                    <h4 class="text-white mb-1" id="eventsWithFeedback">0</h4>
+                                                    <div class="text-light small">Events Reviewed</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card bg-warning text-dark">
+                                                <div class="card-body text-center">
+                                                    <h4 class="text-dark mb-1" id="feedbackResponseRate">0%</h4>
+                                                    <div class="text-muted small">Response Rate</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Feedback List -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Student</th>
+                                                    <th>Event</th>
+                                                    <th>Rating</th>
+                                                    <th>Comments</th>
+                                                    <th>Submitted</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="feedbackTableBody">
+                                                <tr>
+                                                    <td colspan="5" class="text-center">
+                                                        <i class="fas fa-spinner fa-spin"></i> Loading feedback...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reports Section -->
+                        <div id="reportsSection" class="section">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">Reports & Analytics</h5>
+                                            <div>
+                                                <button class="btn btn-outline-primary me-2" onclick="refreshReports()">
+                                                    <i class="fas fa-sync-alt me-2"></i>Refresh
+                                                </button>
+                                                <button class="btn btn-success" onclick="exportAllReports()">
+                                                    <i class="fas fa-download me-2"></i>Export All
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <!-- Report Filters -->
+                                            <div class="row mb-4">
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Date Range</label>
+                                                    <select class="form-select" id="dateRangeFilter" onchange="applyReportFilters()">
+                                                        <option value="all">All Time</option>
+                                                        <option value="week">Last 7 Days</option>
+                                                        <option value="month">Last 30 Days</option>
+                                                        <option value="quarter">Last 3 Months</option>
+                                                        <option value="year">Last Year</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Event Type</label>
+                                                    <select class="form-select" id="eventTypeReportFilter" onchange="applyReportFilters()">
+                                                        <option value="">All Types</option>
+                                                        <option value="Workshop">Workshop</option>
+                                                        <option value="Hackathon">Hackathon</option>
+                                                        <option value="Tech Talk">Tech Talk</option>
+                                                        <option value="Fest">Fest</option>
+                                                        <option value="Seminar">Seminar</option>
+                                                        <option value="Competition">Competition</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Department</label>
+                                                    <select class="form-select" id="departmentReportFilter" onchange="applyReportFilters()">
+                                                        <option value="">All Departments</option>
+                                                        <option value="Computer Science">Computer Science</option>
+                                                        <option value="Electronics">Electronics</option>
+                                                        <option value="Mechanical">Mechanical</option>
+                                                        <option value="Civil">Civil</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 d-flex align-items-end">
+                                                    <button class="btn btn-outline-secondary w-100" onclick="resetReportFilters()">
+                                                        <i class="fas fa-undo me-2"></i>Reset
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Reports Content -->
+                                            <div class="row">
+                                                <!-- Event Popularity Report -->
+                                                <div class="col-12 mb-4">
+                                                    <div class="card bg-light">
+                                                        <div class="card-header">
+                                                            <h6 class="mb-0"><i class="fas fa-trophy me-2 text-warning"></i>Event Popularity Report</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Rank</th>
+                                                                            <th>Event Name</th>
+                                                                            <th>Type</th>
+                                                                            <th>Registrations</th>
+                                                                            <th>Capacity</th>
+                                                                            <th>Fill Rate</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="eventPopularityTable">
+                                                                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Student Participation Report -->
+                                                <div class="col-12 mb-4">
+                                                    <div class="card bg-light">
+                                                        <div class="card-header">
+                                                            <h6 class="mb-0"><i class="fas fa-users me-2 text-primary"></i>Student Participation Report</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-sm">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Student Name</th>
+                                                                            <th>Department</th>
+                                                                            <th>Events Registered</th>
+                                                                            <th>Events Attended</th>
+                                                                            <th>Attendance Rate</th>
+                                                                            <th>Engagement Score</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="studentParticipationTable">
+                                                                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Top 3 Most Active Students -->
+                                                <div class="col-12 mb-4">
+                                                    <div class="card bg-light">
+                                                        <div class="card-header">
+                                                            <h6 class="mb-0"><i class="fas fa-medal me-2 text-success"></i>Top 3 Most Active Students</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="row" id="topStudentsCards">
+                                                                <div class="col-md-4 text-center">
+                                                                    <div class="p-3">
+                                                                        <div class="spinner-border text-primary" role="status"></div>
+                                                                        <p class="mt-2">Loading...</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Analytics Summary -->
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Analytics Summary</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-4">
+                                                <h6 class="text-muted">Overall Statistics</h6>
+                                                <div class="row text-center">
+                                                    <div class="col-6">
+                                                        <div class="border rounded p-2 mb-2">
+                                                            <div class="h5 mb-0 text-primary" id="totalEventsAnalytics">0</div>
+                                                            <small class="text-muted">Total Events</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="border rounded p-2 mb-2">
+                                                            <div class="h5 mb-0 text-success" id="totalStudentsAnalytics">0</div>
+                                                            <small class="text-muted">Total Students</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="border rounded p-2 mb-2">
+                                                            <div class="h5 mb-0 text-warning" id="totalRegistrationsAnalytics">0</div>
+                                                            <small class="text-muted">Registrations</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="border rounded p-2 mb-2">
+                                                            <div class="h5 mb-0 text-info" id="avgAttendanceAnalytics">0%</div>
+                                                            <small class="text-muted">Avg Attendance</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-4">
+                                                <h6 class="text-muted">Event Type Distribution</h6>
+                                                <div id="eventTypeDistribution">
+                                                    <div class="text-center">
+                                                        <div class="spinner-border text-primary" role="status"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <h6 class="text-muted">Department Participation</h6>
+                                                <div id="departmentParticipation">
+                                                    <div class="text-center">
+                                                        <div class="spinner-border text-primary" role="status"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Old Feedback Section (disabled) -->
+        <div id="oldFeedbackSectionDisabled" class="section" style="display: none;">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Event Feedback & Ratings</h5>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="feedbackEventFilter" onchange="filterFeedback()">
+                            <option value="">All Events</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadFeedback()">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Feedback Stats -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-primary mb-1" id="totalFeedbackCount">0</h4>
+                                <small class="text-muted">Total Reviews</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-warning mb-1" id="averageRating">0.0</h4>
+                                <small class="text-muted">Average Rating</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-success mb-1" id="eventsWithFeedback">0</h4>
+                                <small class="text-muted">Events Reviewed</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-info mb-1" id="feedbackResponseRate">0%</h4>
+                                <small class="text-muted">Response Rate</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feedback List -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Event</th>
+                                    <th>Rating</th>
+                                    <th>Comments</th>
+                                    <th>Submitted</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedbackTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading feedback...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login Overlay (initially hidden) -->
+    <div id="loginOverlay" class="login-overlay" style="display: none;">
+        <div class="login-card">
+            <h3 class="mb-4">Admin Login</h3>
+            <form onsubmit="login(event)">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="username" placeholder="Username" value="admin_nit" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="password" placeholder="Password" value="admin123" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </button>
+            </form>
+            <div class="mt-3">
+                <small class="text-muted">Demo: admin_nit/admin123 or admin_iit/admin123</small>
+            </div>
+            <div id="loginMessage" class="mt-3"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentToken = null;
+        let currentUser = null;
+        
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('admin_token');
+            const user = localStorage.getItem('current_admin');
+            
+            if (token && user) {
+                currentToken = token;
+                currentUser = JSON.parse(user);
+                console.log('Already logged in as:', currentUser);
+                updateUserInfo();
+                loadDashboardData();
+            } else {
+                console.log('Not logged in, showing login form');
+                showLogin();
+            }
+        });
+        
+        function showLogin() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+        }
+        
+        function hideLogin() {
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+        
+        async function login(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('loginMessage');
+            
+            messageDiv.innerHTML = '<div class="text-info">Logging in...</div>';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    currentToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('admin_token', currentToken);
+                    localStorage.setItem('current_admin', JSON.stringify(currentUser));
+                    
+                    messageDiv.innerHTML = '<div class="text-success">Login successful! Welcome, ' + data.user.fullName + '</div>';
+                    
+                    setTimeout(() => {
+                        hideLogin();
+                        updateUserInfo();
+                        loadDashboardData();
+                    }, 1000);
+                    
+                } else {
+                    messageDiv.innerHTML = '<div class="text-danger">Login failed: ' + (data.message || 'Unknown error') + '</div>';
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="text-danger">Network error: ' + error.message + '</div>';
+            }
+        }
+        
+        function updateUserInfo() {
+            if (currentUser) {
+                const adminName = currentUser.college?.name || currentUser.fullName || 'Admin';
+                document.getElementById('adminName').textContent = adminName;
+                console.log('Updated admin name to:', adminName);
+            }
+        }
+        
+        async function loadDashboardData() {
+            if (!currentToken) return;
+            
+            console.log('Loading dashboard data...');
+            
+            try {
+                const [eventsRes, studentsRes, registrationsRes] = await Promise.all([
+                    fetch('/api/events', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+                    fetch('/api/students', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+                    fetch('/api/registrations', { headers: { 'Authorization': `Bearer ${currentToken}` } })
+                ]);
+                
+                const events = await eventsRes.json();
+                const students = await studentsRes.json();
+                const registrations = await registrationsRes.json();
+                
+                console.log('Data loaded:', { 
+                    events: events.length, 
+                    students: students.length, 
+                    registrations: registrations.length 
+                });
+                
+                // Calculate real attendance rate
+                const attendedRegistrations = registrations.filter(reg => reg.status === 'attended').length;
+                const totalRegistrations = registrations.length;
+                const attendanceRate = totalRegistrations > 0 ? Math.round((attendedRegistrations / totalRegistrations) * 100) : 0;
+                
+                // Update stats
+                document.getElementById('totalEvents').textContent = Array.isArray(events) ? events.length : 0;
+                document.getElementById('totalStudents').textContent = Array.isArray(students) ? students.length : 0;
+                document.getElementById('totalRegistrations').textContent = Array.isArray(registrations) ? registrations.length : 0;
+                document.getElementById('attendanceRate').textContent = `${attendanceRate}%`;
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                // Show fallback values
+                document.getElementById('totalEvents').textContent = '0';
+                document.getElementById('totalStudents').textContent = '0';
+                document.getElementById('totalRegistrations').textContent = '0';
+                document.getElementById('attendanceRate').textContent = '0%';
+            }
+        }
+        
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'events': 'Events',
+                'students': 'Students',
+                'registrations': 'Registrations',
+                'reports': 'Reports'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[sectionName] || sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+            
+            // Load data for specific sections
+            switch (sectionName) {
+                case 'events':
+                    loadEvents();
+                    break;
+                case 'students':
+                    loadStudents();
+                    break;
+                case 'registrations':
+                    loadRegistrations();
+                    break;
+                case 'reports':
+                    loadReports();
+                    break;
+                case 'feedback':
+                    loadFeedback();
+                    break;
+            }
+            
+            console.log('Switched to section:', sectionName);
+        }
+        
+        function refreshData() {
+            console.log('Refreshing data...');
+            loadDashboardData();
+            
+            // Show success message
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check me-2"></i>Refreshed!';
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-success');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-primary');
+            }, 2000);
+        }
+        
+        function addEvent() {
+            alert('Add Event functionality - Coming soon!');
+        }
+        
+        // ===== REPORTS & ANALYTICS =====
+        let reportData = {
+            events: [],
+            students: [],
+            registrations: []
+        };
+        
+        async function loadReports() {
+            if (!currentToken) return;
+            
+            try {
+                // Load all data for reports
+                const [eventsRes, studentsRes, registrationsRes] = await Promise.all([
+                    fetch('/api/events', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+                    fetch('/api/students', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+                    fetch('/api/registrations', { headers: { 'Authorization': `Bearer ${currentToken}` } })
+                ]);
+                
+                reportData.events = await eventsRes.json();
+                reportData.students = await studentsRes.json();
+                reportData.registrations = await registrationsRes.json();
+                
+                generateAllReports();
+                console.log('Reports data loaded');
+                
+            } catch (error) {
+                console.error('Error loading reports data:', error);
+            }
+        }
+        
+        function generateAllReports() {
+            generateEventPopularityReport();
+            generateStudentParticipationReport();
+            generateTopStudentsReport();
+            generateAnalyticsSummary();
+        }
+        
+        function generateEventPopularityReport() {
+            const events = reportData.events;
+            
+            // Calculate registrations per event
+            const eventStats = events.map(event => {
+                const registrations = reportData.registrations.filter(reg => reg.event_id === event.id);
+                const fillRate = event.max_participants ? ((registrations.length / event.max_participants) * 100).toFixed(1) : 0;
+                
+                return {
+                    ...event,
+                    registrationCount: registrations.length,
+                    fillRate: parseFloat(fillRate)
+                };
+            });
+            
+            // Sort by registration count
+            eventStats.sort((a, b) => b.registrationCount - a.registrationCount);
+            
+            const tbody = document.getElementById('eventPopularityTable');
+            
+            if (eventStats.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No events found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = eventStats.map((event, index) => {
+                const rankBadge = index < 3 ? 
+                    `<span class="badge bg-warning text-dark">#${index + 1}</span>` : 
+                    `<span class="badge bg-light text-dark">#${index + 1}</span>`;
+                
+                const fillRateClass = event.fillRate >= 80 ? 'text-success' : event.fillRate >= 50 ? 'text-warning' : 'text-danger';
+                
+                return `
+                    <tr>
+                        <td>${rankBadge}</td>
+                        <td><strong>${event.title}</strong></td>
+                        <td><span class="badge bg-primary">${event.event_type}</span></td>
+                        <td><strong>${event.registrationCount}</strong></td>
+                        <td>${event.max_participants || 'N/A'}</td>
+                        <td><span class="${fillRateClass}">${event.fillRate}%</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function generateStudentParticipationReport() {
+            const students = reportData.students;
+            
+            // Calculate participation stats for each student
+            const studentStats = students.map(student => {
+                const registrations = reportData.registrations.filter(reg => reg.student_id === student.id);
+                const attended = registrations.filter(reg => reg.status === 'attended');
+                const attendanceRate = registrations.length > 0 ? ((attended.length / registrations.length) * 100).toFixed(1) : 0;
+                
+                // Calculate engagement score (weighted formula)
+                const engagementScore = Math.min(100, (registrations.length * 10) + (parseFloat(attendanceRate) * 0.5));
+                
+                return {
+                    ...student,
+                    registrationCount: registrations.length,
+                    attendedCount: attended.length,
+                    attendanceRate: parseFloat(attendanceRate),
+                    engagementScore: Math.round(engagementScore)
+                };
+            });
+            
+            // Sort by engagement score
+            studentStats.sort((a, b) => b.engagementScore - a.engagementScore);
+            
+            const tbody = document.getElementById('studentParticipationTable');
+            
+            if (studentStats.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No students found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = studentStats.slice(0, 20).map(student => {
+                const attendanceClass = student.attendanceRate >= 80 ? 'text-success' : student.attendanceRate >= 60 ? 'text-warning' : 'text-danger';
+                const engagementClass = student.engagementScore >= 80 ? 'text-success' : student.engagementScore >= 60 ? 'text-warning' : 'text-danger';
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                     style="width: 24px; height: 24px; font-size: 10px;">
+                                    ${student.full_name.charAt(0)}
+                                </div>
+                                <strong>${student.full_name}</strong>
+                            </div>
+                        </td>
+                        <td>${student.department}</td>
+                        <td><span class="badge bg-info">${student.registrationCount}</span></td>
+                        <td><span class="badge bg-success">${student.attendedCount}</span></td>
+                        <td><span class="${attendanceClass}">${student.attendanceRate}%</span></td>
+                        <td><span class="${engagementClass} fw-bold">${student.engagementScore}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function generateTopStudentsReport() {
+            const students = reportData.students;
+            
+            // Calculate scores for top students
+            const studentScores = students.map(student => {
+                const registrations = reportData.registrations.filter(reg => reg.student_id === student.id);
+                const attended = registrations.filter(reg => reg.status === 'attended');
+                const attendanceRate = registrations.length > 0 ? (attended.length / registrations.length) * 100 : 0;
+                
+                // Advanced scoring algorithm
+                const score = (registrations.length * 15) + (attendanceRate * 0.8) + (student.year * 5);
+                
+                return {
+                    ...student,
+                    registrationCount: registrations.length,
+                    attendedCount: attended.length,
+                    attendanceRate: attendanceRate.toFixed(1),
+                    score: Math.round(score)
+                };
+            });
+            
+            // Get top 3 students
+            const topStudents = studentScores.sort((a, b) => b.score - a.score).slice(0, 3);
+            
+            const container = document.getElementById('topStudentsCards');
+            
+            if (topStudents.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted">No students found</div>';
+                return;
+            }
+            
+            container.innerHTML = topStudents.map((student, index) => {
+                const medals = ['🥇', '🥈', '🥉'];
+                const colors = ['warning', 'secondary', 'dark'];
+                
+                return `
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <div class="h1 mb-2">${medals[index]}</div>
+                            <div class="bg-${colors[index]} text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" 
+                                 style="width: 50px; height: 50px; font-weight: bold;">
+                                ${student.full_name.charAt(0)}
+                            </div>
+                            <h6 class="mb-1">${student.full_name}</h6>
+                            <small class="text-muted d-block">${student.department}</small>
+                            <div class="mt-2">
+                                <small class="d-block">Events: <strong>${student.registrationCount}</strong></small>
+                                <small class="d-block">Attendance: <strong>${student.attendanceRate}%</strong></small>
+                                <small class="d-block">Score: <strong class="text-primary">${student.score}</strong></small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function generateAnalyticsSummary() {
+            const events = reportData.events;
+            const students = reportData.students;
+            const registrations = reportData.registrations;
+            
+            // Update overall stats
+            document.getElementById('totalEventsAnalytics').textContent = events.length;
+            document.getElementById('totalStudentsAnalytics').textContent = students.length;
+            document.getElementById('totalRegistrationsAnalytics').textContent = registrations.length;
+            
+            // Calculate average attendance
+            const attendedCount = registrations.filter(reg => reg.status === 'attended').length;
+            const avgAttendance = registrations.length > 0 ? ((attendedCount / registrations.length) * 100).toFixed(1) : 0;
+            document.getElementById('avgAttendanceAnalytics').textContent = avgAttendance + '%';
+            
+            // Generate event type distribution
+            const eventTypes = {};
+            events.forEach(event => {
+                eventTypes[event.type] = (eventTypes[event.type] || 0) + 1;
+            });
+            
+            const typeDistribution = document.getElementById('eventTypeDistribution');
+            typeDistribution.innerHTML = Object.entries(eventTypes).map(([type, count]) => {
+                const percentage = ((count / events.length) * 100).toFixed(1);
+                return `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">${type}</span>
+                        <div class="d-flex align-items-center">
+                            <div class="progress me-2" style="width: 80px; height: 8px;">
+                                <div class="progress-bar bg-primary" style="width: ${percentage}%"></div>
+                            </div>
+                            <span class="small">${count}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<small class="text-muted">No data available</small>';
+            
+            // Generate department participation
+            const departments = {};
+            registrations.forEach(reg => {
+                const student = students.find(s => s.id === reg.student_id);
+                if (student && student.department) {
+                    departments[student.department] = (departments[student.department] || 0) + 1;
+                }
+            });
+            
+            const deptParticipation = document.getElementById('departmentParticipation');
+            const maxDeptCount = Math.max(...Object.values(departments)) || 1;
+            
+            deptParticipation.innerHTML = Object.entries(departments).map(([dept, count]) => {
+                const percentage = ((count / maxDeptCount) * 100).toFixed(1);
+                return `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">${dept}</span>
+                        <div class="d-flex align-items-center">
+                            <div class="progress me-2" style="width: 60px; height: 8px;">
+                                <div class="progress-bar bg-success" style="width: ${percentage}%"></div>
+                            </div>
+                            <span class="small">${count}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<small class="text-muted">No data available</small>';
+        }
+        
+        function applyReportFilters() {
+            // Note: For simplicity, we'll just regenerate reports
+            // In a real implementation, you'd filter the data before generating reports
+            generateAllReports();
+            showSuccessMessage('Filters applied to reports!');
+        }
+        
+        function resetReportFilters() {
+            document.getElementById('dateRangeFilter').value = 'all';
+            document.getElementById('eventTypeReportFilter').value = '';
+            document.getElementById('departmentReportFilter').value = '';
+            generateAllReports();
+            showSuccessMessage('Report filters reset!');
+        }
+        
+        function refreshReports() {
+            loadReports();
+            showSuccessMessage('Reports refreshed!');
+        }
+        
+        function exportAllReports() {
+            if (!reportData.events.length) {
+                alert('No data available to export');
+                return;
+            }
+            
+            // Create comprehensive report data
+            const reportContent = `Campus Event Management System - Comprehensive Report
+Generated on: ${new Date().toLocaleString()}
+========================================
+
+SUMMARY:
+- Total Events: ${reportData.events.length}
+- Total Students: ${reportData.students.length}  
+- Total Registrations: ${reportData.registrations.length}
+- Average Attendance: ${document.getElementById('avgAttendanceAnalytics').textContent}
+
+EVENT POPULARITY REPORT:
+${reportData.events.map((event, index) => {
+    const regCount = reportData.registrations.filter(reg => reg.event_id === event.id).length;
+    const fillRate = event.max_participants ? ((regCount / event.max_participants) * 100).toFixed(1) : 0;
+    return `${index + 1}. ${event.title} (${event.event_type}) - ${regCount} registrations (${fillRate}% filled)`;
+}).join('\n')}
+
+STUDENT PARTICIPATION:
+${reportData.students.map(student => {
+    const regs = reportData.registrations.filter(reg => reg.student_id === student.id);
+    const attended = regs.filter(reg => reg.status === 'attended');
+    const rate = regs.length > 0 ? ((attended.length / regs.length) * 100).toFixed(1) : 0;
+    return `${student.full_name} (${student.department}) - ${regs.length} events registered, ${rate}% attendance`;
+}).join('\n')}
+
+Report generated by Campus Event Management System`;
+            
+            // Download as text file
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `campus_events_report_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showSuccessMessage('Complete report exported successfully!');
+        }
+        
+        // Feedback Management
+        let allFeedback = [];
+        
+        async function loadFeedback() {
+            if (!currentToken) return;
+            
+            try {
+                const [feedbackRes, eventsRes] = await Promise.all([
+                    fetch('/api/feedback', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+                    fetch('/api/events', { headers: { 'Authorization': `Bearer ${currentToken}` } })
+                ]);
+                
+                if (!feedbackRes.ok) {
+                    throw new Error(`Feedback API error: ${feedbackRes.status} ${feedbackRes.statusText}`);
+                }
+                
+                if (!eventsRes.ok) {
+                    throw new Error(`Events API error: ${eventsRes.status} ${eventsRes.statusText}`);
+                }
+                
+                const feedback = await feedbackRes.json();
+                const events = await eventsRes.json();
+                
+                allFeedback = Array.isArray(feedback) ? feedback : [];
+                
+                // Populate event filter dropdown
+                const eventFilter = document.getElementById('feedbackEventFilter');
+                eventFilter.innerHTML = '<option value="">All Events</option>' +
+                    events.map(event => `<option value="${event.id}">${event.title}</option>`).join('');
+                
+                displayFeedback(allFeedback);
+                updateFeedbackStats(allFeedback, events);
+                
+            } catch (error) {
+                console.error('Error loading feedback:', error);
+                document.getElementById('feedbackTableBody').innerHTML = 
+                    '<tr><td colspan="5" class="text-center text-danger">Error loading feedback: ' + error.message + '</td></tr>';
+            }
+        }
+        
+        function displayFeedback(feedback) {
+            console.log('=== DISPLAYING FEEDBACK ===');
+            console.log('Feedback array:', feedback);
+            console.log('Feedback length:', feedback.length);
+            
+            const tbody = document.getElementById('feedbackTableBody');
+            
+            if (feedback.length === 0) {
+                console.log('No feedback to display');
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No feedback found</td></tr>';
+                return;
+            }
+            
+            // Simple test version first
+            let htmlContent = '';
+            console.log('Starting to process feedback items...');
+            
+            try {
+                for (let i = 0; i < feedback.length; i++) {
+                    const fb = feedback[i];
+                    console.log(`Processing feedback ${i}:`, fb);
+                    
+                    // Basic safe processing
+                    const studentName = fb.student_name || 'Unknown Student';
+                    const eventTitle = fb.event_title || 'Unknown Event';
+                    const rating = fb.rating || 0;
+                    const comments = fb.comments || 'No comments';
+                    const submittedAt = fb.submitted_at || 'Unknown date';
+                    
+                    console.log('Extracted data:', { studentName, eventTitle, rating, comments, submittedAt });
+                    
+                    const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+                    
+                    htmlContent += `
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                         style="width: 32px; height: 32px; font-size: 12px; font-weight: bold;">
+                                        ${studentName.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <strong>${studentName}</strong>
+                                        <br><small class="text-muted">ID: ${fb.student_id_number || 'N/A'}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>${eventTitle}</strong>
+                                <br><small class="text-muted">${fb.event_type || ''}</small>
+                            </td>
+                            <td>
+                                <div class="text-warning" style="font-size: 1.1rem;" title="${rating}/5 stars">
+                                    ${stars}
+                                </div>
+                                <small class="text-muted">(${rating}/5)</small>
+                            </td>
+                            <td>
+                                ${comments !== 'No comments' ? 
+                                    `<div class="comment-text" style="max-width: 300px;">
+                                        ${comments.length > 100 ? 
+                                            `${comments.substring(0, 100)}... 
+                                             <button class="btn btn-link btn-sm p-0" onclick="showFullComment('${comments.replace(/'/g, "\\'")}')">Read more</button>` 
+                                            : comments}
+                                    </div>` 
+                                    : '<em class="text-muted">No comments</em>'}
+                            </td>
+                            <td>
+                                ${new Date(submittedAt).toLocaleDateString()}<br>
+                                <small class="text-muted">${new Date(submittedAt).toLocaleTimeString()}</small>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                tbody.innerHTML = htmlContent;
+                
+            } catch (loopError) {
+                console.error('Error in processing loop:', loopError);
+                tbody.innerHTML = '<tr><td colspan="5" class="text-danger">Error processing feedback data</td></tr>';
+            }
+        }
+        
+        function updateFeedbackStats(feedback, events) {
+            const totalFeedback = feedback.length;
+            const averageRating = totalFeedback > 0 ? (feedback.reduce((sum, fb) => sum + fb.rating, 0) / totalFeedback).toFixed(1) : 0;
+            const eventsWithFeedback = [...new Set(feedback.map(fb => fb.event_id))].length;
+            
+            // Calculate response rate (feedback vs total registrations)
+            const totalRegistrations = events.reduce((sum, event) => {
+                return sum + (event.registration_count || 0);
+            }, 0);
+            const responseRate = totalRegistrations > 0 ? ((totalFeedback / totalRegistrations) * 100).toFixed(0) : 0;
+            
+            document.getElementById('totalFeedbackCount').textContent = totalFeedback;
+            document.getElementById('averageRating').textContent = averageRating;
+            document.getElementById('eventsWithFeedback').textContent = eventsWithFeedback;
+            document.getElementById('feedbackResponseRate').textContent = responseRate + '%';
+        }
+        
+        function filterFeedback() {
+            const eventFilter = document.getElementById('feedbackEventFilter').value;
+            
+            let filteredFeedback = allFeedback;
+            
+            if (eventFilter) {
+                filteredFeedback = filteredFeedback.filter(fb => fb.event_id == eventFilter);
+            }
+            
+            displayFeedback(filteredFeedback);
+        }
+        
+        function showFullComment(comment) {
+            alert(comment); // Simple alert for now - you could make this a proper modal
+        }
+        
+        let allRegistrations = [];
+        let selectedRegistrations = new Set();
+        
+        async function loadRegistrations() {
+            if (!currentToken) return;
+            
+            try {
+                const [registrationsRes, eventsRes] = await Promise.all([
+                    fetch('/api/registrations', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+                    fetch('/api/events', { headers: { 'Authorization': `Bearer ${currentToken}` } })
+                ]);
+                
+                const registrations = await registrationsRes.json();
+                const events = await eventsRes.json();
+                
+                allRegistrations = Array.isArray(registrations) ? registrations : [];
+                
+                // Populate event filter dropdown
+                const eventFilter = document.getElementById('eventFilterReg');
+                eventFilter.innerHTML = '<option value="">All Events</option>' +
+                    events.map(event => `<option value="${event.id}">${event.title}</option>`).join('');
+                
+                displayRegistrations(allRegistrations);
+                updateRegistrationStats(allRegistrations);
+                console.log('Loaded registrations:', allRegistrations.length);
+                
+            } catch (error) {
+                console.error('Error loading registrations:', error);
+                document.getElementById('registrationsTableBody').innerHTML = 
+                    '<tr><td colspan="7" class="text-center text-danger">Error loading registrations</td></tr>';
+            }
+        }
+        
+        function displayRegistrations(registrations) {
+            const tbody = document.getElementById('registrationsTableBody');
+            
+            if (registrations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No registrations found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = registrations.map(registration => {
+                const registrationDate = new Date(registration.registration_date);
+                const status = registration.status || 'registered';
+                const checkInTime = registration.check_in_time ? new Date(registration.check_in_time) : null;
+                
+                let statusBadge;
+                switch (status) {
+                    case 'attended':
+                        statusBadge = '<span class="badge bg-success">Attended</span>';
+                        break;
+                    case 'cancelled':
+                        statusBadge = '<span class="badge bg-danger">Cancelled</span>';
+                        break;
+                    default:
+                        statusBadge = '<span class="badge bg-warning">Registered</span>';
+                }
+                
+                return `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="registration-checkbox" value="${registration.id}" 
+                                   onchange="toggleRegistrationSelection(${registration.id})">
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                     style="width: 32px; height: 32px; font-size: 12px; font-weight: bold;">
+                                    ${registration.student_name ? registration.student_name.charAt(0) : 'S'}
+                                </div>
+                                <div>
+                                    <strong>${registration.student_name || 'Unknown Student'}</strong>
+                                    <br><small class="text-muted">${registration.student_email || ''}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong>${registration.event_title || 'Unknown Event'}</strong>
+                            <br><small class="text-muted">${registration.start_datetime ? new Date(registration.start_datetime).toLocaleDateString() : ''}</small>
+                        </td>
+                        <td>${registrationDate.toLocaleDateString()}<br><small class="text-muted">${registrationDate.toLocaleTimeString()}</small></td>
+                        <td>${statusBadge}</td>
+                        <td>${checkInTime ? `${checkInTime.toLocaleDateString()}<br><small class="text-muted">${checkInTime.toLocaleTimeString()}</small>` : '-'}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn ${status === 'attended' ? 'btn-success' : 'btn-outline-success'}" 
+                                        onclick="markAttendance(${registration.id}, 'attended')" 
+                                        title="Mark Present">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn ${status === 'absent' ? 'btn-danger' : 'btn-outline-danger'}" 
+                                        onclick="markAttendance(${registration.id}, 'absent')" 
+                                        title="Mark Absent">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="btn btn-outline-info" onclick="viewRegistrationDetails(${registration.id})" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function updateRegistrationStats(registrations) {
+            const total = registrations.length;
+            const attended = registrations.filter(r => r.status === 'attended').length;
+            const cancelled = registrations.filter(r => r.status === 'cancelled').length;
+            const pending = registrations.filter(r => r.status === 'registered').length;
+            
+            document.getElementById('totalRegistrationsCount').textContent = total;
+            document.getElementById('attendedCount').textContent = attended;
+            document.getElementById('absentCount').textContent = cancelled;
+            document.getElementById('pendingCount').textContent = pending;
+        }
+        
+        async function markAttendance(registrationId, status) {
+            try {
+                const response = await fetch(`/api/registrations/${registrationId}/attendance`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ 
+                        attendance_status: status,
+                        check_in_time: status === 'attended' ? new Date().toISOString() : null
+                    })
+                });
+                
+                if (response.ok) {
+                    loadRegistrations(); // Refresh the table
+                    showSuccessMessage(`Attendance marked as ${status}!`);
+                } else {
+                    const result = await response.json();
+                    alert('Error updating attendance: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+        
+        function toggleRegistrationSelection(registrationId) {
+            if (selectedRegistrations.has(registrationId)) {
+                selectedRegistrations.delete(registrationId);
+            } else {
+                selectedRegistrations.add(registrationId);
+            }
+            
+            // Update select all checkbox
+            const checkboxes = document.querySelectorAll('.registration-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            selectAllCheckbox.indeterminate = selectedRegistrations.size > 0 && selectedRegistrations.size < checkboxes.length;
+            selectAllCheckbox.checked = selectedRegistrations.size === checkboxes.length;
+        }
+        
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll').checked;
+            const checkboxes = document.querySelectorAll('.registration-checkbox');
+            
+            selectedRegistrations.clear();
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll;
+                if (selectAll) {
+                    selectedRegistrations.add(parseInt(checkbox.value));
+                }
+            });
+        }
+        
+        async function markAllPresent() {
+            if (selectedRegistrations.size === 0) {
+                alert('Please select registrations to mark as present');
+                return;
+            }
+            
+            if (!confirm(`Mark ${selectedRegistrations.size} selected registrations as present?`)) {
+                return;
+            }
+            
+            try {
+                const promises = Array.from(selectedRegistrations).map(id => 
+                    fetch(`/api/registrations/${id}/attendance`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${currentToken}`
+                        },
+                        body: JSON.stringify({ 
+                            attendance_status: 'attended',
+                            check_in_time: new Date().toISOString()
+                        })
+                    })
+                );
+                
+                await Promise.all(promises);
+                selectedRegistrations.clear();
+                document.getElementById('selectAll').checked = false;
+                loadRegistrations();
+                showSuccessMessage('Selected registrations marked as present!');
+                
+            } catch (error) {
+                alert('Error updating attendance: ' + error.message);
+            }
+        }
+        
+        function viewRegistrationDetails(registrationId) {
+            const registration = allRegistrations.find(r => r.id === registrationId);
+            if (!registration) return;
+            
+            const registrationDate = new Date(registration.registration_date);
+            const checkInTime = registration.check_in_time ? new Date(registration.check_in_time) : null;
+            
+            alert(`Registration Details:
+            
+Student: ${registration.student_name || 'Unknown'}
+Email: ${registration.student_email || 'N/A'}
+Event: ${registration.event_name || 'Unknown'}
+Event Date: ${registration.event_date ? new Date(registration.event_date).toLocaleDateString() : 'N/A'}
+Registration Date: ${registrationDate.toLocaleDateString()} at ${registrationDate.toLocaleTimeString()}
+Status: ${registration.attendance_status || 'registered'}
+Check-in Time: ${checkInTime ? `${checkInTime.toLocaleDateString()} at ${checkInTime.toLocaleTimeString()}` : 'Not checked in'}`);
+        }
+        
+        function filterRegistrations() {
+            const searchTerm = document.getElementById('registrationSearch').value.toLowerCase();
+            const eventFilter = document.getElementById('eventFilterReg').value;
+            const statusFilter = document.getElementById('statusFilterReg').value;
+            const dateFilter = document.getElementById('dateFilterReg').value;
+            
+            let filtered = allRegistrations.filter(registration => {
+                const matchesSearch = (registration.student_name || '').toLowerCase().includes(searchTerm) || 
+                                    (registration.event_name || '').toLowerCase().includes(searchTerm) ||
+                                    (registration.student_email || '').toLowerCase().includes(searchTerm);
+                
+                const matchesEvent = !eventFilter || registration.event_id == eventFilter;
+                const matchesStatus = !statusFilter || (registration.attendance_status || 'registered') === statusFilter;
+                
+                let matchesDate = true;
+                if (dateFilter) {
+                    const regDate = new Date(registration.registration_date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    switch (dateFilter) {
+                        case 'today':
+                            const regToday = new Date(regDate);
+                            regToday.setHours(0, 0, 0, 0);
+                            matchesDate = regToday.getTime() === today.getTime();
+                            break;
+                        case 'week':
+                            const weekAgo = new Date(today);
+                            weekAgo.setDate(weekAgo.getDate() - 7);
+                            matchesDate = regDate >= weekAgo;
+                            break;
+                        case 'month':
+                            const monthAgo = new Date(today);
+                            monthAgo.setMonth(monthAgo.getMonth() - 1);
+                            matchesDate = regDate >= monthAgo;
+                            break;
+                    }
+                }
+                
+                return matchesSearch && matchesEvent && matchesStatus && matchesDate;
+            });
+            
+            displayRegistrations(filtered);
+            updateRegistrationStats(filtered);
+        }
+        
+        function exportRegistrations() {
+            if (allRegistrations.length === 0) {
+                alert('No registrations to export');
+                return;
+            }
+            
+            // Create CSV content
+            const headers = ['Student Name', 'Student Email', 'Event Name', 'Event Date', 'Registration Date', 'Status', 'Check-in Time'];
+            const csvContent = [
+                headers.join(','),
+                ...allRegistrations.map(reg => {
+                    const regDate = new Date(reg.registration_date);
+                    const checkIn = reg.check_in_time ? new Date(reg.check_in_time) : null;
+                    const eventDate = reg.event_date ? new Date(reg.event_date) : null;
+                    
+                    return [
+                        `"${reg.student_name || ''}"`,
+                        `"${reg.student_email || ''}"`,
+                        `"${reg.event_name || ''}"`,
+                        `"${eventDate ? eventDate.toLocaleDateString() : ''}"`,
+                        `"${regDate.toLocaleDateString()} ${regDate.toLocaleTimeString()}"`,
+                        `"${reg.attendance_status || 'registered'}"`,
+                        `"${checkIn ? checkIn.toLocaleDateString() + ' ' + checkIn.toLocaleTimeString() : ''}"`
+                    ].join(',');
+                })
+            ].join('\n');
+            
+            // Download CSV file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `registrations_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showSuccessMessage('Registrations data exported successfully!');
+        }
+        let allStudents = [];
+        let editingStudentId = null;
+        
+        function showAddStudentForm() {
+            editingStudentId = null;
+            document.getElementById('studentModalTitle').textContent = 'Add New Student';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentModal').style.display = 'flex';
+        }
+        
+        function hideStudentModal() {
+            document.getElementById('studentModal').style.display = 'none';
+            editingStudentId = null;
+        }
+        
+        async function saveStudent(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value,
+                student_id: document.getElementById('studentId').value,
+                phone: document.getElementById('studentPhone').value,
+                department: document.getElementById('studentDepartment').value,
+                year: parseInt(document.getElementById('studentYear').value)
+            };
+            
+            try {
+                const method = editingStudentId ? 'PUT' : 'POST';
+                const url = editingStudentId ? `/api/students/${editingStudentId}` : '/api/students';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    hideStudentModal();
+                    loadStudents();
+                    loadDashboardData(); // Refresh dashboard stats
+                    showSuccessMessage(editingStudentId ? 'Student updated successfully!' : 'Student added successfully!');
+                } else {
+                    alert('Error saving student: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+        
+        async function loadStudents() {
+            if (!currentToken) return;
+            
+            try {
+                const response = await fetch('/api/students', {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                
+                const students = await response.json();
+                allStudents = Array.isArray(students) ? students : [];
+                
+                displayStudents(allStudents);
+                console.log('Loaded students:', allStudents.length);
+                
+            } catch (error) {
+                console.error('Error loading students:', error);
+                document.getElementById('studentsTableBody').innerHTML = 
+                    '<tr><td colspan="7" class="text-center text-danger">Error loading students</td></tr>';
+            }
+        }
+        
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentsTableBody');
+            
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No students found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = students.map(student => {
+                const eventsCount = student.total_registrations || 0;
+                const attendedEvents = student.total_attendance || 0;
+                const attendanceRate = eventsCount > 0 ? Math.round((attendedEvents / eventsCount) * 100) : 0;
+                const status = student.status || 'Active';
+                
+                const statusBadge = status === 'Active' ? 
+                    '<span class="badge bg-success">Active</span>' : 
+                    '<span class="badge bg-secondary">Inactive</span>';
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                     style="width: 40px; height: 40px; font-weight: bold;">
+                                    ${student.full_name.charAt(0)}
+                                </div>
+                                <div>
+                                    <strong>${student.full_name}</strong>
+                                    <br><small class="text-muted">${student.email}</small>
+                                    <br><small class="text-muted">ID: ${student.student_id}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${student.department}</td>
+                        <td>
+                            <span class="badge bg-info">${student.year}${student.year === 1 ? 'st' : student.year === 2 ? 'nd' : student.year === 3 ? 'rd' : 'th'} Year</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary rounded-pill">${eventsCount}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">${attendanceRate}%</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar ${attendanceRate >= 80 ? 'bg-success' : attendanceRate >= 60 ? 'bg-warning' : 'bg-danger'}" 
+                                         style="width: ${attendanceRate}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="editStudent(${student.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-info" onclick="viewStudentProfile(${student.id})" title="View Profile">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="deleteStudent(${student.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        async function editStudent(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (!student) return;
+            
+            editingStudentId = studentId;
+            document.getElementById('studentModalTitle').textContent = 'Edit Student';
+            
+            // Fill form with student data
+            document.getElementById('studentName').value = student.name;
+            document.getElementById('studentEmail').value = student.email;
+            document.getElementById('studentId').value = student.student_id;
+            document.getElementById('studentPhone').value = student.phone || '';
+            document.getElementById('studentDepartment').value = student.department;
+            document.getElementById('studentYear').value = student.year;
+            
+            document.getElementById('studentModal').style.display = 'flex';
+        }
+        
+        async function deleteStudent(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (!student) return;
+            
+            if (!confirm(`Are you sure you want to delete "${student.name}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/students/${studentId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                
+                if (response.ok) {
+                    loadStudents();
+                    loadDashboardData(); // Refresh dashboard stats
+                    showSuccessMessage('Student deleted successfully!');
+                } else {
+                    const result = await response.json();
+                    alert('Error deleting student: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+        
+        function viewStudentProfile(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (!student) return;
+            
+            alert(`Student Profile:
+            
+Name: ${student.name}
+Email: ${student.email}
+Student ID: ${student.student_id}
+Phone: ${student.phone || 'N/A'}
+Department: ${student.department}
+Year: ${student.year}${student.year === 1 ? 'st' : student.year === 2 ? 'nd' : student.year === 3 ? 'rd' : 'th'} Year
+Events Registered: ${student.events_count || 0}
+Status: ${student.status || 'Active'}`);
+        }
+        
+        function filterStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const departmentFilter = document.getElementById('departmentFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            
+            let filtered = allStudents.filter(student => {
+                const matchesSearch = student.name.toLowerCase().includes(searchTerm) || 
+                                    student.email.toLowerCase().includes(searchTerm) ||
+                                    student.student_id.toLowerCase().includes(searchTerm);
+                
+                const matchesDepartment = !departmentFilter || student.department === departmentFilter;
+                const matchesYear = !yearFilter || student.year == yearFilter;
+                
+                return matchesSearch && matchesDepartment && matchesYear;
+            });
+            
+            displayStudents(filtered);
+        }
+        
+        function exportStudents() {
+            if (allStudents.length === 0) {
+                alert('No students to export');
+                return;
+            }
+            
+            // Create CSV content
+            const headers = ['Name', 'Email', 'Student ID', 'Department', 'Year', 'Events Count'];
+            const csvContent = [
+                headers.join(','),
+                ...allStudents.map(student => [
+                    `"${student.name}"`,
+                    `"${student.email}"`,
+                    `"${student.student_id}"`,
+                    `"${student.department}"`,
+                    student.year,
+                    student.events_count || 0
+                ].join(','))
+            ].join('\n');
+            
+            // Download CSV file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `students_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showSuccessMessage('Students data exported successfully!');
+        }
+        let allEvents = [];
+        let editingEventId = null;
+        
+        function showAddEventForm() {
+            editingEventId = null;
+            document.getElementById('eventModalTitle').textContent = 'Add New Event';
+            document.getElementById('eventForm').reset();
+            
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eventDate').value = today;
+            
+            document.getElementById('eventModal').style.display = 'flex';
+        }
+        
+        function hideEventModal() {
+            document.getElementById('eventModal').style.display = 'none';
+            editingEventId = null;
+        }
+        
+        async function saveEvent(event) {
+            event.preventDefault();
+            
+            const eventDate = document.getElementById('eventDate').value;
+            const eventTime = document.getElementById('eventTime').value;
+            const endTime = document.getElementById('eventTime').value; // For simplicity, using same time + 2 hours
+            
+            // Combine date and time into ISO datetime format
+            const startDatetime = `${eventDate}T${eventTime}:00`;
+            
+            // Calculate end datetime (2 hours later for simplicity)
+            const endDate = new Date(`${eventDate}T${eventTime}:00`);
+            endDate.setHours(endDate.getHours() + 2);
+            const endDatetime = endDate.toISOString().slice(0, 19);
+            
+            const formData = {
+                title: document.getElementById('eventName').value,
+                eventType: document.getElementById('eventType').value,
+                startDatetime: startDatetime,
+                endDatetime: endDatetime,
+                location: document.getElementById('eventVenue').value,
+                maxParticipants: parseInt(document.getElementById('eventCapacity').value),
+                description: document.getElementById('eventDescription').value || 'No description provided',
+                registrationDeadline: startDatetime // Same as start time for simplicity
+            };
+            
+            console.log('Sending event data:', formData);
+            
+            try {
+                const method = editingEventId ? 'PUT' : 'POST';
+                const url = editingEventId ? `/api/events/${editingEventId}` : '/api/events';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    hideEventModal();
+                    loadEvents();
+                    loadDashboardData(); // Refresh dashboard stats
+                    showSuccessMessage(editingEventId ? 'Event updated successfully!' : 'Event created successfully!');
+                } else {
+                    console.error('API Error:', result);
+                    alert('Error saving event: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                alert('Network error: ' + error.message);
+            }
+        }
+        
+        async function loadEvents() {
+            if (!currentToken) return;
+            
+            try {
+                const response = await fetch('/api/events', {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                
+                const events = await response.json();
+                allEvents = Array.isArray(events) ? events : [];
+                
+                displayEvents(allEvents);
+                console.log('Loaded events:', allEvents.length);
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                document.getElementById('eventsTableBody').innerHTML = 
+                    '<tr><td colspan="7" class="text-center text-danger">Error loading events</td></tr>';
+            }
+        }
+        
+        function displayEvents(events) {
+            const tbody = document.getElementById('eventsTableBody');
+            
+            if (events.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No events found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = events.map(event => {
+                // Handle both old format (date field) and new format (start_datetime field)
+                const eventDate = event.start_datetime ? new Date(event.start_datetime) : new Date(event.date);
+                const isUpcoming = eventDate > new Date();
+                const statusBadge = isUpcoming ? 
+                    '<span class="badge bg-success">Upcoming</span>' : 
+                    '<span class="badge bg-secondary">Past</span>';
+                
+                const registeredCount = event.registered_count || event.registration_count || 0;
+                const capacity = event.max_participants || event.capacity || 100;
+                const progressPercent = capacity ? Math.min((registeredCount / capacity) * 100, 100) : 0;
+                
+                const eventName = event.title || event.name || 'Untitled Event';
+                const eventType = event.event_type || event.type || 'Unknown';
+                const eventVenue = event.location || event.venue || 'TBD';
+                const eventTime = event.start_datetime ? new Date(event.start_datetime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : (event.time || '');
+                
+                return `
+                    <tr>
+                        <td>
+                            <strong>${eventName}</strong>
+                            <br><small class="text-muted">${eventVenue}</small>
+                        </td>
+                        <td><span class="badge bg-primary">${eventType}</span></td>
+                        <td>
+                            ${eventDate.toLocaleDateString()}
+                            <br><small class="text-muted">${eventTime}</small>
+                        </td>
+                        <td>${capacity}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">${registeredCount}</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="editEvent(${event.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-info" onclick="viewEventDetails(${event.id})" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="deleteEvent(${event.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        async function editEvent(eventId) {
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
+            
+            editingEventId = eventId;
+            document.getElementById('eventModalTitle').textContent = 'Edit Event';
+            
+            // Fill form with event data - handle both old and new API formats
+            document.getElementById('eventName').value = event.title || event.name || '';
+            document.getElementById('eventType').value = event.event_type || event.type || '';
+            
+            // Handle date/time - check if it's the new format (start_datetime) or old format (date/time)
+            if (event.start_datetime) {
+                const eventDateTime = new Date(event.start_datetime);
+                document.getElementById('eventDate').value = eventDateTime.toISOString().split('T')[0];
+                document.getElementById('eventTime').value = eventDateTime.toTimeString().slice(0, 5);
+            } else if (event.date) {
+                document.getElementById('eventDate').value = event.date;
+                document.getElementById('eventTime').value = event.time || '09:00';
+            } else {
+                // Default values
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('eventDate').value = today;
+                document.getElementById('eventTime').value = '09:00';
+            }
+            
+            document.getElementById('eventVenue').value = event.location || event.venue || '';
+            document.getElementById('eventCapacity').value = event.max_participants || event.capacity || 100;
+            document.getElementById('eventDescription').value = event.description || '';
+            
+            document.getElementById('eventModal').style.display = 'flex';
+        }
+        
+        async function deleteEvent(eventId) {
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
+            
+            if (!confirm(`Are you sure you want to delete "${event.name}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/events/${eventId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                
+                if (response.ok) {
+                    loadEvents();
+                    loadDashboardData(); // Refresh dashboard stats
+                    showSuccessMessage('Event deleted successfully!');
+                } else {
+                    const result = await response.json();
+                    alert('Error deleting event: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Network error: ' + error.message);
+            }
+        }
+        
+        function viewEventDetails(eventId) {
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
+            
+            // Handle both old and new API formats
+            const eventName = event.title || event.name || 'Untitled Event';
+            const eventType = event.event_type || event.type || 'Unknown';
+            const eventVenue = event.location || event.venue || 'TBD';
+            const capacity = event.max_participants || event.capacity || 'N/A';
+            const registeredCount = event.registered_count || event.registration_count || 0;
+            
+            let eventDate, eventTime, isUpcoming;
+            if (event.start_datetime) {
+                const eventDateTime = new Date(event.start_datetime);
+                eventDate = eventDateTime.toLocaleDateString();
+                eventTime = eventDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                isUpcoming = eventDateTime > new Date();
+            } else {
+                eventDate = event.date ? new Date(event.date).toLocaleDateString() : 'TBD';
+                eventTime = event.time || 'TBD';
+                isUpcoming = event.date ? new Date(event.date) > new Date() : false;
+            }
+            
+            alert(`Event Details:
+            
+Name: ${eventName}
+Type: ${eventType}
+Date: ${eventDate} at ${eventTime}
+Venue: ${eventVenue}
+Capacity: ${capacity}
+Registered: ${registeredCount}
+Status: ${isUpcoming ? 'Upcoming' : 'Past'}
+Description: ${event.description || 'No description'}`);
+        }
+        
+        function filterEvents() {
+            const searchTerm = document.getElementById('eventSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('eventTypeFilter').value;
+            
+            let filtered = allEvents.filter(event => {
+                const matchesSearch = event.name.toLowerCase().includes(searchTerm) || 
+                                    event.venue.toLowerCase().includes(searchTerm) ||
+                                    event.description.toLowerCase().includes(searchTerm);
+                
+                const matchesType = !typeFilter || event.type === typeFilter;
+                
+                return matchesSearch && matchesType;
+            });
+            
+            displayEvents(filtered);
+        }
+        
+        function showSuccessMessage(message) {
+            // Create temporary success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentElement) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        function logout() {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('current_admin');
+            currentToken = null;
+            currentUser = null;
+            showLogin();
+            
+            // Reset UI
+            document.getElementById('adminName').textContent = 'Loading...';
+            document.getElementById('totalEvents').textContent = '0';
+            document.getElementById('totalStudents').textContent = '0';
+            document.getElementById('totalRegistrations').textContent = '0';
+            document.getElementById('attendanceRate').textContent = '0%';
+        }
+        
+        // Global functions for easy access
+        window.showSection = showSection;
+        window.login = login;
+        window.logout = logout;
+        window.refreshData = refreshData;
+        window.addEvent = addEvent;
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event Management Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .portal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2.5rem;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .portal-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #00f2fe;
+        }
+
+        .portal-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .portal-card p {
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+
+        .features-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #00f2fe;
+            margin-bottom: 1rem;
+        }
+
+        .stats-row {
+            margin-top: 4rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00f2fe;
+        }
+
+        .stat-item .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1><i class="fas fa-graduation-cap"></i> Campus Event Management</h1>
+                <p>Streamline event organization, boost student engagement, and build vibrant campus communities</p>
+                
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <a href="/student-portal.html" class="portal-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Student Portal</h3>
+                            <p>Browse events, create your profile, and register for exciting activities</p>
+                        </a>
+                    </div>
+                    <div class="col-md-5">
+                        <a href="/admin.html" class="portal-card">
+                            <i class="fas fa-cogs"></i>
+                            <h3>Admin Portal</h3>
+                            <p>Manage events, track attendance, and generate comprehensive reports</p>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row stats-row">
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalColleges">3</div>
+                            <div class="stat-label">Partner Colleges</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalEvents">50+</div>
+                            <div class="stat-label">Events Managed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalStudents">500+</div>
+                            <div class="stat-label">Active Students</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center mb-5">
+                    <h2 style="color: white; font-weight: bold;">Platform Features</h2>
+                    <p style="color: rgba(255,255,255,0.8);">Everything you need for successful campus event management</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Event Management</h4>
+                        <p>Create, schedule, and manage all types of campus events with ease</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-user-plus"></i>
+                        <h4>Smart Registration</h4>
+                        <p>Streamlined registration process with capacity management and waitlists</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>Attendance Tracking</h4>
+                        <p>Digital check-in system for accurate attendance monitoring</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <h4>Analytics & Reports</h4>
+                        <p>Comprehensive insights and analytics for data-driven decisions</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-university"></i>
+                        <h4>Multi-College Support</h4>
+                        <p>Scalable architecture supporting multiple colleges and institutions</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h4>Mobile Ready</h4>
+                        <p>Responsive design that works perfectly on all devices</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
