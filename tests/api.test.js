@@ -183,9 +183,10 @@ describe('Campus Event Management API', () => {
                 return;
             }
 
+            // The route reads snake_case `event_id` (matching what public/js/student.js
+            // posts); this test previously sent camelCase `eventId` and always got a 400.
             const feedbackData = {
-                eventId: testEventId,
-                studentId: testStudentId,
+                event_id: testEventId,
                 rating: 4,
                 comments: 'Test feedback - good workshop!'
             };
@@ -257,10 +258,11 @@ describe('Campus Event Management API', () => {
         });
     });
 
-    afterAll(() => {
-        // Close database connection
+    afterAll(async () => {
+        // Close database connection. Awaited so sqlite3's callback fires before
+        // Jest tears the environment down, otherwise it logs after the run ends.
         if (db.getDb()) {
-            db.close();
+            await db.close();
         }
     });
 });

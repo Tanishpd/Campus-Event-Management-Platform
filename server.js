@@ -66,7 +66,7 @@ app.get('/students', (req, res) => {
 });
 
 // Catch-all handler: serve index.html for unknown routes (SPA-like behavior)
-app.get('*', (req, res) => {
+app.get('/*splat', (req, res) => {
     // Only redirect non-API routes to index.html
     if (!req.path.startsWith('/api')) {
         res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -84,9 +84,15 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`🚀 Campus Event Management Platform running on port ${PORT}`);
-    console.log(`📊 Admin Portal: http://localhost:${PORT}`);
-    console.log(`🔗 API Docs: http://localhost:${PORT}/api/health`);
-});
+// Start the server only when run directly. Under `require` (the test suite
+// does `require('../server')`) we export the app instead, so supertest can
+// bind it to an ephemeral port rather than fighting over PORT.
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`🚀 Campus Event Management Platform running on port ${PORT}`);
+        console.log(`📊 Admin Portal: http://localhost:${PORT}`);
+        console.log(`🔗 API Docs: http://localhost:${PORT}/api/health`);
+    });
+}
+
+module.exports = app;

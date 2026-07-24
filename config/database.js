@@ -273,13 +273,18 @@ class Database {
         return this.db;
     }
 
+    // Returns a promise so callers (notably the Jest teardown) can await the
+    // close instead of logging after the test run has already finished.
     close() {
-        this.db.close((err) => {
-            if (err) {
-                console.error('Error closing database:', err.message);
-            } else {
+        return new Promise((resolve, reject) => {
+            this.db.close((err) => {
+                if (err) {
+                    console.error('Error closing database:', err.message);
+                    return reject(err);
+                }
                 console.log('Database connection closed.');
-            }
+                resolve();
+            });
         });
     }
 }
