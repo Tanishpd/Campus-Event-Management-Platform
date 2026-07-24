@@ -2,6 +2,13 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+
+// Fail fast rather than booting with a signing key that is published in this
+// repository. A server that starts with a known secret issues forgeable tokens.
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not set. Copy .env.example to .env and set it.');
+}
 const db = require('../config/database');
 
 // Login endpoint
@@ -29,8 +36,7 @@ router.post('/login', (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // For demo purposes, we'll allow plain text password 'admin123'
-        const validPassword = password === 'admin123' || bcrypt.compareSync(password, user.password_hash);
+        const validPassword = bcrypt.compareSync(password, user.password_hash);
         
         if (!validPassword) {
             return res.status(401).json({ message: 'Invalid credentials' });
@@ -44,7 +50,7 @@ router.post('/login', (req, res) => {
                 username: user.username,
                 role: user.role
             },
-            process.env.JWT_SECRET || 'default-secret',
+            JWT_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -108,7 +114,7 @@ const authenticateToken = (req, res, next) => {
         return res.status(401).json({ message: 'Access token required' });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET || 'default-secret', (err, user) => {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).json({ message: 'Invalid or expired token' });
         }
@@ -208,7 +214,7 @@ router.post('/student-register', (req, res) => {
                         email: student.email,
                         role: 'student'
                     },
-                    process.env.JWT_SECRET || 'default-secret',
+                    JWT_SECRET,
                     { expiresIn: '24h' }
                 );
 
@@ -274,7 +280,7 @@ router.post('/student-login', (req, res) => {
                 email: student.email,
                 role: 'student'
             },
-            process.env.JWT_SECRET || 'default-secret',
+            JWT_SECRET,
             { expiresIn: '24h' }
         );
 

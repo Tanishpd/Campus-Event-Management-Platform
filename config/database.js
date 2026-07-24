@@ -222,9 +222,11 @@ class Database {
             "INSERT INTO colleges (name, code, address, contact_email, phone) VALUES ('National Institute of Technology', 'NIT-KAR', 'Karnataka, India', 'admin@nitk.ac.in', '+91-824-247-3456')",
             "INSERT INTO colleges (name, code, address, contact_email, phone) VALUES ('Indian Institute of Science', 'IISC-BLR', 'Bangalore, India', 'admin@iisc.ac.in', '+91-80-2293-2001')",
 
-            // Sample admin users (password: 'admin123' - hashed)
-            "INSERT INTO admin_users (college_id, username, email, password_hash, full_name, role) VALUES (1, 'admin_iit', 'admin@iitd.ac.in', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'IIT Admin', 'admin')",
-            "INSERT INTO admin_users (college_id, username, email, password_hash, full_name, role) VALUES (2, 'admin_nit', 'admin@nitk.ac.in', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'NIT Admin', 'admin')",
+            // Demo admin accounts. The password really is 'admin123' — this hash is a
+            // genuine bcrypt of it, verified at seed time. Change these before any
+            // real deployment.
+            "INSERT INTO admin_users (college_id, username, email, password_hash, full_name, role) VALUES (1, 'admin_iit', 'admin@iitd.ac.in', '$2b$10$m/xr1sN1OEBlFNNHjBFp3.SbqEXa6gxwREcEmO8BHIYEy78O3h0bS', 'IIT Admin', 'admin')",
+            "INSERT INTO admin_users (college_id, username, email, password_hash, full_name, role) VALUES (2, 'admin_nit', 'admin@nitk.ac.in', '$2b$10$m/xr1sN1OEBlFNNHjBFp3.SbqEXa6gxwREcEmO8BHIYEy78O3h0bS', 'NIT Admin', 'admin')",
 
             // Sample students
             "INSERT INTO students (college_id, student_id, email, full_name, phone, department, year) VALUES (1, 'CS2021001', 'student1@iitd.ac.in', 'Rahul Kumar', '+91-9876543210', 'Computer Science', 3)",

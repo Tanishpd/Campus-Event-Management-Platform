@@ -132,6 +132,12 @@ Demo Credentials
 
 IIT Delhi → Username: admin_iit | Password: admin123
 
+> **Demo credentials — change before deploying.** These accounts are seeded by
+> `config/database.js` for local evaluation only. `JWT_SECRET` must be set in the
+> environment; the server refuses to start without it, so it can never boot with a
+> signing key published in this repository.
+
+
 NIT Karnataka → Username: admin_nit | Password: admin123
 
 Example usage:
